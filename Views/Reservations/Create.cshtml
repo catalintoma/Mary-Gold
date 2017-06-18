@@ -1,0 +1,47 @@
+@model Marigold.ReservationInputDto
+
+<h1> Create reservation </h1>
+
+@using(Html.BeginForm())
+{
+    <div class="row vertical-divider">
+        <div class="col-md-6">
+        <h3>Details</h3>            
+        @Html.AntiForgeryToken() 
+
+        <div class="form-group">
+            @Html.LabelFor(m=>m.SelectedRoomId)
+            @Html.DropDownListFor(m => m.SelectedRoomId, Model.Rooms, new {@class="form-control"})
+            @Html.ValidationMessageFor(m=>m.SelectedRoomId)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerName)
+            @Html.EditorFor(model => model.CustomerName, new {htmlAttributes  = new {@class="form-control"}})
+            @Html.ValidationMessageFor(model => model.CustomerName)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CustomerPhoneNo)
+            @Html.EditorFor(model => model.CustomerPhoneNo, new {htmlAttributes  = new {@class="form-control"}})
+            @Html.ValidationMessageFor(model => model.CustomerPhoneNo)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CheckinDate)
+            @Html.EditorFor(model => model.CheckinDate, new {htmlAttributes  = new {@class="form-control"}})
+            @Html.ValidationMessageFor(model => model.CheckinDate)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CheckoutDate)
+            @Html.EditorFor(model => model.CheckoutDate, new {htmlAttributes  = new {@class="form-control"}})
+            @Html.ValidationMessageFor(model => model.CheckoutDate)
+        </div>
+        </div>
+        <div class="col-md-6">
+            <h3 style="margin-left: -20px">Services</h3>
+            @Html.Partial("Services",Model)
+        </div>
+    </div>        
+    <input type="submit" class="btn btn-primary" value="Create" />
+}

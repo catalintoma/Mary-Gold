@@ -8,7 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Marigold.Data;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Marigold
 {
@@ -30,17 +31,20 @@ namespace Marigold
         public void ConfigureServices(IServiceCollection services)
         {
             //ef
-            services.AddDbContext<MarigoldDbContext>(options => 
+            services.AddDbContext<MarigoldDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MarigoldDatabase")));
 
             services.AddUnitOfWork<MarigoldDbContext>();
 
             // Add framework services.
             services.AddMvc();
+            services.AddAutoMapper();
+
+            services.AddSingleton<IActionContextAccessor,ActionContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,IUnitOfWork<MarigoldDbContext> uow)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IUnitOfWork<MarigoldDbContext> uow)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -61,7 +65,7 @@ namespace Marigold
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Reservations}/{action=Index}/{id?}");
             });
 
             DbInitializer.Initialize(uow);

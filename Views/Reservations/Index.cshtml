@@ -1,0 +1,40 @@
+@model ReservationsViewModel
+
+<h1>Reservations</h1>
+
+<table>
+
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th>Room</th>
+            <th>Checkin Date</th>
+            <th>Customer Name</th>
+            <th>@Model.RoomUnitDescription</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach(var r in Model.Reservations)
+        {
+            <tr>
+                <td>@r.RoomDescription</td>
+                <td>@r.CheckinDate.ToString("d")</td>
+                <td>@r.CustomerName</td>
+                <td>@r.Units</td>
+                <td>
+                    @Html.ActionLink(
+                        @r.CheckedOut ? "View Bill" : "Checkout",
+                        @r.CheckedOut ? "Bill" : "Checkout",
+                        "Reservations",new {id = r.ReservationId})
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+</table>
+
+<pager class="pager-container" list="@Model.Reservations" options="@PagedListRenderOptions.TwitterBootstrapPager" asp-action="Index" asp-controller="Reservations" asp-route-keyword="" />
+
+@Html.ActionLink("Create reservation","Create")

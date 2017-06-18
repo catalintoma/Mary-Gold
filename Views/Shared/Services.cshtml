@@ -1,0 +1,28 @@
+@model ReservationInputDto
+
+
+@for (var i = 0; i < Model.Services.Count;i++)
+{
+    var item = Model.Services[i];
+    @Html.HiddenFor(l => Model.Services[i].ServiceId)
+
+    <div class="checkbox">
+        @Html.CheckBoxFor(l => Model.Services[i].Enabled)
+        @Html.LabelFor(l => Model.Services[i].Enabled,item.Name)
+    </div>
+    @if (!item.Unitless)
+    {
+        var htmlAttributes = new Dictionary<string,object>
+        {
+            
+        };
+        if(!item.Enabled)
+        {
+            htmlAttributes.Add("disabled","disabled");
+        }
+
+        <div class="form-group">
+            @Html.EditorFor(l => Model.Services[i].Units, new {htmlAttributes = htmlAttributes}) @item.UnitDescription
+        </div>
+    }
+}
