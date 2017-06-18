@@ -6,6 +6,10 @@ namespace Marigold
 {
     public class Reservation
     {
+        public Reservation()
+        {
+            BillableServices = new List<BillableService>();
+        }
         public string ReservationId { get; set; }
 
         [Required]

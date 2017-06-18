@@ -17,7 +17,7 @@ namespace Marigold
             var servicesRepo = uow.GetRepository<Service>();
 
             //store some units,in case we need them later
-            Unit roomUnit, unitlessUnit = null;
+            Unit roomUnit, unitlessUnit, dayunit = null;
 
             #region Seed units
 
@@ -32,6 +32,7 @@ namespace Marigold
                 };
 
                 roomUnit = units.First(u => u.Name == "Night");
+                dayunit = units.First(u => u.Name == "Day");
                 unitlessUnit = units.First(u => u.Name == Unit.UnitlessKey);
 
                 await unitRepo.InsertAsync(units);
@@ -39,6 +40,7 @@ namespace Marigold
             else
             {
                 roomUnit = (await unitRepo.GetPagedListAsync(u => u.Name == "Night", pageSize: 1)).Items.First();
+                dayunit = (await unitRepo.GetPagedListAsync(u => u.Name == "Day", pageSize: 1)).Items.First();
                 unitlessUnit = (await unitRepo.GetPagedListAsync(u => u.Name == Unit.UnitlessKey, pageSize: 1)).Items.First();
             }
 
@@ -86,8 +88,16 @@ namespace Marigold
                         .Create(),
                     new ServiceBuilder<Service>()
                         .Named("Bike")
-                        .WithUnit(unitlessUnit)
+                        .WithUnit(dayunit)
                         .Priced(101)
+                        .Create(),
+                    new ServiceBuilder<Service>()
+                        .Named("Minibar")
+                        .ExtraCustomPrice(unitlessUnit)
+                        .Create(),
+                    new ServiceBuilder<Service>()
+                        .Named("Extra Charges")
+                        .ExtraCustomPrice(unitlessUnit)
                         .Create()
                 });
             }

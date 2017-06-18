@@ -15,10 +15,12 @@ namespace Marigold
         [Required]
         public Unit Unit { get; set; }
 
-        [NotMapped]
-        public bool Unitless { get 
-        { 
-            return Unit.Name == Unit.UnitlessKey; } }
+        public bool Extra { get; set; }
 
+        [NotMapped]
+        public bool Unitless { get { return Unit.Unitless; } }
+
+        [NotMapped]
+        public bool ExtraCustomPrice { get { return Extra && Unit.Unitless && UnitPrice == 1; } }
     }
 }

@@ -16,6 +16,20 @@ namespace Marigold
             return this;
         }
 
+        public ServiceBuilder<T> Extra()
+        {
+            _output.Extra = true;
+            return this;
+        }
+
+        public ServiceBuilder<T> ExtraCustomPrice(Unit unitlessUnit)
+        {
+            _output.Extra = true;
+            _output.UnitPrice = 1;
+            _output.Unit = unitlessUnit;
+            return this;
+        }
+
         public ServiceBuilder<T> WithUnit(Unit unit)
         {
             _output.Unit = unit;

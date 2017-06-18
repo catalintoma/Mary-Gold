@@ -1,0 +1,39 @@
+@model ReservationInputDto
+
+<h1>Checkout</h1>
+
+ @using(Html.BeginForm("Checkout","Reservations",FormMethod.Post,new {@class="static"}))
+ {
+   @Html.HiddenFor(m => m.ReservationId)
+
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Customer</label>
+    <div class="col-sm-10">
+      <p class="form-control-static">@Model.CustomerName</p>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Room</label>
+    <div class="col-sm-10">
+      <p class="form-control-static">@Model.RoomDescription</p>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Checkin Date</label>
+    <div class="col-sm-10">
+      <p class="form-control-static">@Model.CheckinDate.ToString("d")</p>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">@ViewBag.RoomUnitDescription</label>
+    <div class="col-sm-10">
+      <p class="form-control-static">@Model.Units</p>
+    </div>
+  </div>
+  <div class="row" style="padding-left: 15px">
+    <h3>Extra Services</h3>
+        @Html.Partial("Services",Model)
+
+  </div>
+  <input type="submit" class="btn btn-primary" value="Checkout" />
+}

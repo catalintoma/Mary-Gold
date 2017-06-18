@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Marigold
 {
@@ -11,6 +12,9 @@ namespace Marigold
         public string Name { get; set; }
 
         public static string UnitlessKey { get { return "Unitless"; } }
+
+        [NotMapped]
+        public bool Unitless { get { return Name == UnitlessKey; } }
 
         //Simple builder
         public static Unit Named(string name)

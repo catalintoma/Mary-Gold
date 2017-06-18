@@ -13,7 +13,7 @@ namespace Marigold
         public string ServiceId { get; set; }
 
 
-
+        [Range(1,int.MaxValue,ErrorMessage = "Please specify a positive number!")]
         public int Units { get; set; }
     }
 }

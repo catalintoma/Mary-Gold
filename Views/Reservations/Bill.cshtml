@@ -1,0 +1,44 @@
+@model BillOutputDto
+
+<form class="static" id="printableArea">
+    <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Customer</label>
+    <div class="col-sm-10">
+        <p class="form-control-static">@Model.CustomerName</p>
+    </div>
+    </div>
+    <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Checkin Date</label>
+    <div class="col-sm-10">
+        <p class="form-control-static">@Model.CheckinDate.ToString("d")</p>
+    </div>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Service</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Ammount</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach(var r in Model.Services)
+        {
+            <tr>
+                <td>@r.Name</td>
+                <td>@r.Units @r.UnitDescription</td>
+                <td>@r.UnitPrice</td>
+                <td>@r.Total</td>
+            </tr>
+        }
+        <tr style="font-size:18px;">
+            <td><b>Total</b></td>
+            <td colspan="3" style="text-align:center"><b>@Model.Total <span class="gold-text">@ViewBag.Currency</span></b></td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+<div class="centeredContent">
+    <input id="printBill" type="button" class="btn btn-primary btn-lg" value="Print bill"/>
+</div>

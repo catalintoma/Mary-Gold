@@ -1,4 +1,4 @@
-@model ReservationsViewModel
+@model StaticPagedList<ReservationOutputDto>
 
 <h1>Reservations</h1>
 
@@ -10,12 +10,12 @@
             <th>Room</th>
             <th>Checkin Date</th>
             <th>Customer Name</th>
-            <th>@Model.RoomUnitDescription</th>
+            <th>@ViewBag.RoomUnitDescription</th>
             <th>Action</th>
         </tr>
         </thead>
         <tbody>
-        @foreach(var r in Model.Reservations)
+        @foreach(var r in Model)
         {
             <tr>
                 <td>@r.RoomDescription</td>
@@ -35,6 +35,8 @@
 
 </table>
 
-<pager class="pager-container" list="@Model.Reservations" options="@PagedListRenderOptions.TwitterBootstrapPager" asp-action="Index" asp-controller="Reservations" asp-route-keyword="" />
+<pager class="pager-container" list="@Model" options="@PagedListRenderOptions.TwitterBootstrapPager" asp-action="Index" asp-controller="Reservations" asp-route-keyword="" />
 
-@Html.ActionLink("Create reservation","Create")
+<div class="centeredContent">
+    <input type="button" class="btn btn-primary btn-lg" value="Create reservation" onclick="location.href='Reservations/Create'"/>
+</div>

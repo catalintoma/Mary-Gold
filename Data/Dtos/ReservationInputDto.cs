@@ -13,6 +13,8 @@ namespace Marigold
             CheckoutDate = DateTime.Now.AddDays(1);
         }
 
+        public string ReservationId { get; set; }
+
         [Required(ErrorMessage = "Required")]
         [Display(Name = "Customer Name")]
         public string CustomerName { get; set; }
@@ -39,6 +41,10 @@ namespace Marigold
 
         [Display(Name = "Room type")]
         public string SelectedRoomId { get; set; }
+
+        public int Units { get; set; }
+
+        public string RoomDescription{get;set;}
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

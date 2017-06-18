@@ -6,11 +6,11 @@
     var item = Model.Services[i];
     @Html.HiddenFor(l => Model.Services[i].ServiceId)
 
-    <div class="checkbox">
+    <div>
         @Html.CheckBoxFor(l => Model.Services[i].Enabled)
         @Html.LabelFor(l => Model.Services[i].Enabled,item.Name)
     </div>
-    @if (!item.Unitless)
+    @if (!item.Unitless || item.Extra)
     {
         var htmlAttributes = new Dictionary<string,object>
         {
@@ -23,6 +23,7 @@
 
         <div class="form-group">
             @Html.EditorFor(l => Model.Services[i].Units, new {htmlAttributes = htmlAttributes}) @item.UnitDescription
+            @Html.ValidationMessageFor(l => Model.Services[i].Units,null, new {style="display:block"})
         </div>
     }
 }

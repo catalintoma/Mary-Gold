@@ -18,6 +18,8 @@ namespace Marigold
 
         public bool Unitless { get; set; }
 
+        public bool Extra{get;set;}
+
         public string UnitDescription { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Min. value: 1")]

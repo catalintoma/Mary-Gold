@@ -11,7 +11,7 @@ namespace Marigold
         {
             CreateMap<Service, ServiceInputDto>()
                 .ForMember(s => s.Unitless, opt => opt.MapFrom(s => s.Unitless))
-                .ForMember(s => s.UnitDescription, opt => opt.MapFrom(s => $"{s.Unit.Name}(s)"));
+                .ForMember(s => s.UnitDescription, opt => opt.MapFrom(s => s.Unit));
 
             CreateMap<Room, SelectListItem>()
                 .ForMember(s => s.Value, opt => opt.MapFrom(r => r.ServiceId))
@@ -24,11 +24,7 @@ namespace Marigold
                 .ForMember(r => r.BillableServices, opt => opt.MapFrom(
                      i => i.Services
                         .Where(s => s.Enabled)
-                        .Select(s => new BillableService()
-                        {
-                            ServiceId = s.ServiceId,
-                            Units = s.Units
-                        })
+                        .Select(s => Mapper.Map<BillableService>(s))
                         .Concat(new[]{new BillableService()
                         {
                             ServiceId = i.SelectedRoomId,
@@ -36,10 +32,28 @@ namespace Marigold
                         }})
                  ));
 
+            CreateMap<BillableService, BillableServiceOutputDto>()
+                .ForMember(o => o.Name, opt => opt.MapFrom(s => s.Service.Name))
+                .ForMember(o => o.UnitDescription, opt => opt.MapFrom(s => Mapper.Map<string>(s.Service.Unit)))
+                .ForMember(o => o.UnitPrice, opt => opt.MapFrom(s => s.Service.ExtraCustomPrice ? s.Units : s.Service.UnitPrice))
+                .ForMember(o => o.Units, opt => opt.MapFrom(s => s.Service.ExtraCustomPrice ? 1 : s.Units));
+
+            CreateMap<List<BillableService>, List<BillableServiceOutputDto>>()
+                .ConstructUsing(l =>
+                    l.OrderByDescending(s => s.Service, Comparer<Service>.Create((a, b) => (a is Room) ? 1 : -1))
+                    .Select(s => Mapper.Map<BillableServiceOutputDto>(s))
+                    .ToList());
+
+            CreateMap<List<BillableServiceOutputDto>, int>()
+                .ConstructUsing(l => l.Sum(s => s.Total));
+
+
+            CreateMap<ServiceInputDto, BillableService>();
             CreateMap<Reservation, ReservationOutputDto>();
+            CreateMap<Reservation, ReservationInputDto>();
 
             CreateMap<Unit, string>()
-                .ConvertUsing(u => $"{u.Name}s");
+                .ConvertUsing(u => u.Unitless ? string.Empty : $"{u.Name}s");
 
 
 
