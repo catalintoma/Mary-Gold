@@ -10,7 +10,6 @@ namespace Marigold
         public MappingProfile()
         {
             CreateMap<Service, BillableServiceInputDto>()
-                .ForMember(s => s.Unitless, opt => opt.MapFrom(s => s.Unitless))
                 .ForMember(s => s.UnitDescription, opt => opt.MapFrom(s => s.Unit));
 
             CreateMap<BillableServiceInputDto,Service>();
@@ -37,11 +36,13 @@ namespace Marigold
             CreateMap<BillableService, BillableServiceOutputDto>()
                 .ForMember(o => o.Name, opt => opt.MapFrom(s => s.Service.Name))
                 .ForMember(o => o.UnitDescription, opt => opt.MapFrom(s => Mapper.Map<string>(s.Service.Unit)))
+                //if extra with custom price, swap properties so the bill is more readable
                 .ForMember(o => o.UnitPrice, opt => opt.MapFrom(s => s.Service.ExtraCustomPrice ? s.Units : s.Service.UnitPrice))
                 .ForMember(o => o.Units, opt => opt.MapFrom(s => s.Service.ExtraCustomPrice ? 1 : s.Units));
 
             CreateMap<List<BillableService>, List<BillableServiceOutputDto>>()
                 .ConstructUsing(l =>
+                    //always show rooms first
                     l.OrderByDescending(s => s.Service, Comparer<Service>.Create((a, b) => (a is Room) ? 1 : -1))
                     .Select(s => Mapper.Map<BillableServiceOutputDto>(s))
                     .ToList());
@@ -57,9 +58,6 @@ namespace Marigold
 
             CreateMap<Unit, string>()
                 .ConvertUsing(u => u.Unitless ? string.Empty : $"{u.Name}(s)");
-
-
-
         }
     }
 }

@@ -9,10 +9,6 @@ namespace Marigold
             
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-        }
-
         public DbSet<Service> Services{get;set;}
 
         public DbSet<Room> Rooms{get;set;}

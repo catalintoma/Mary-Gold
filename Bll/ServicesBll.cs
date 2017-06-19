@@ -51,11 +51,13 @@ namespace Marigold
             if (unit == null)
                 return new BadRequestObjectResult("Unit does not exist!");
 
+            //do not treat unit as insert
             _uow.DbContext.Entry(unit).State = EntityState.Unchanged;
 
             var input = Mapper.Map<Service>(service);
             input.Unit = unit;
 
+            //save changes
             await _serviceRepository.InsertAsync(input);
             await _uow.SaveChangesAsync();
 

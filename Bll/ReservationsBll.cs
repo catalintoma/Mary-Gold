@@ -72,7 +72,8 @@ namespace Marigold
 
             if (reservation == null)
                 return null;
-
+            
+            //get extra services
             var extraServices = await _serviceRepository.All(s => !(s is Room) && s.Extra, include: r => r.Include(s => s.Unit));
 
             var input = Mapper.Map<ReservationInputDto>(reservation);
@@ -90,7 +91,8 @@ namespace Marigold
 
             if (reservation == null)
                 return false;
-
+            
+            //add chosen services
             input.Services
                 .Where(s => s.Enabled).ToList()
                 .ForEach(s => reservation.BillableServices.Add(Mapper.Map<BillableService>(s)));
@@ -107,6 +109,7 @@ namespace Marigold
             if (string.IsNullOrEmpty(id))
                 return null;
 
+            //get reservation + child relationships
             var reservation = (await _reservationRepository.GetPagedListAsync(r => r.ReservationId == id, pageSize: 1,
                 include: i => i.Include(r => r.BillableServices).ThenInclude(s => s.Service).ThenInclude(s => s.Unit))).Items.First();
 

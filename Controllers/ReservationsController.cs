@@ -15,18 +15,12 @@ namespace Marigold
     {
         private IUnitOfWork unitOfWork;
 
-        private readonly IRepository<Service> serviceRepository;
-        private readonly IRepository<Reservation> reservationRepository;
-        private readonly IRepository<Room> roomRepository;
         private IReservationsBll _bll;
 
         public ReservationsController(IReservationsBll bll, IUnitOfWork uow)
         {
             _bll = bll;
             unitOfWork = uow;
-            serviceRepository = uow.GetRepository<Service>();
-            reservationRepository = uow.GetRepository<Reservation>();
-            roomRepository = uow.GetRepository<Room>();
         }
 
         public async Task<IActionResult> Index(int? page)

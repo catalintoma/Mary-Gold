@@ -25,6 +25,8 @@ namespace Marigold
 
         public List<BillableService> BillableServices { get; set; }
 
+        //Both this properties can be inferred by searching the room in the list of billable services
+        //Stored for brevity
         [Required]
         public string RoomDescription { get; set; }
 
