@@ -8,6 +8,7 @@ Source code for the Marigold reservation website
 * Unit of work \ repository thanks to [Arch](https://github.com/Arch/UnitOfWork/)
 * Dto <-> Model mappings thanks to [AutoMapper](http://automapper.org/)
 * API Documentation thanks to [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle)
+* Paging helpers thanks to [Hieudole](https://github.com/hieudole/PagedList.Core.Mvc)
 * BLL layer for separating UI from Data layer
 
 ## Development (a lot easier with [VS Code](https://code.visualstudio.com/) and [this extension](https://github.com/OmniSharp/omnisharp-vscode))
