@@ -38,5 +38,5 @@
 <pager class="pager-container" list="@Model" options="@PagedListRenderOptions.TwitterBootstrapPager" asp-action="Index" asp-controller="Reservations" asp-route-keyword="" />
 
 <div class="centeredContent">
-    <input type="button" class="btn btn-primary btn-lg" value="Create reservation" onclick="location.href='Reservations/Create'"/>
+    <input type="button" class="btn btn-primary btn-lg" value="Create reservation" onclick="location.href='@Url.Action("Create")'"/>
 </div>
