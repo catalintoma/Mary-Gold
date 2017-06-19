@@ -56,7 +56,7 @@ namespace Marigold
             CreateMap<ServiceInputDto,Service>();
 
             CreateMap<Unit, string>()
-                .ConvertUsing(u => u.Unitless ? string.Empty : $"{u.Name}s");
+                .ConvertUsing(u => u.Unitless ? string.Empty : $"{u.Name}(s)");
 
 
 

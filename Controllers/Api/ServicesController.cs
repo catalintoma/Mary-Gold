@@ -23,9 +23,14 @@ namespace Marigold
         }
 
         [HttpGet("{id}")]
-        public async Task<BillableServiceInputDto> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            return await _bll.Get(id);
+            var res = await _bll.Get(id);
+
+            if(res == null)
+                return new NotFoundResult();
+
+            return new ObjectResult(res);
         }
 
         [HttpPost()]
