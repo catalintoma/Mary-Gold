@@ -18,9 +18,11 @@ namespace Marigold
         private readonly IRepository<Service> serviceRepository;
         private readonly IRepository<Reservation> reservationRepository;
         private readonly IRepository<Room> roomRepository;
+        private IReservationsBll _bll;
 
-        public ReservationsController(IUnitOfWork uow)
+        public ReservationsController(IReservationsBll bll, IUnitOfWork uow)
         {
+            _bll = bll;
             unitOfWork = uow;
             serviceRepository = uow.GetRepository<Service>();
             reservationRepository = uow.GetRepository<Reservation>();
@@ -30,27 +32,16 @@ namespace Marigold
         public async Task<IActionResult> Index(int? page)
         {
             var pageIndex = !page.HasValue || page <= 0 ? 1 : page.Value;
-            var roomUnitDescription = Mapper.Map<string>(await roomRepository.RoomUnit());
 
-            var list = reservationRepository.AdaptPaged(r => Mapper.Map<ReservationOutputDto>(r), pageIndex - 1, 10);
+            var list = _bll.Reservations(pageIndex - 1, 10);
 
-            ViewBag.RoomUnitDescription = roomUnitDescription;
+            ViewBag.RoomUnitDescription = await _bll.RoomUnitDescription();
             return View(list);
         }
 
         public async Task<IActionResult> Create()
         {
-            //we don't query by service type since we use both services and rooms
-            var allServices = await serviceRepository.All(include: r => r.Include(s => s.Unit));
-
-            var rooms = allServices.Where(s => s is Room).Cast<Room>();
-            var services = allServices.Where(s => !(s is Room) && !s.Extra);
-
-            return View(new ReservationInputDto
-            {
-                Services = Mapper.Map<List<ServiceInputDto>>(services),
-                Rooms = Mapper.Map<List<SelectListItem>>(rooms)
-            });
+            return View(await _bll.ReservationInput());
         }
 
         [HttpPost]
@@ -59,80 +50,39 @@ namespace Marigold
             if (!ModelState.IsValid)
                 return View(input);
 
-            var room = await roomRepository.FindAsync(input.SelectedRoomId);
-
-            var reservation = Mapper.Map<Reservation>(input);
-
-            reservation.RoomDescription = room.Name;
-
-            await reservationRepository.InsertAsync(reservation);
-
-            await unitOfWork.SaveChangesAsync();
+            await _bll.Create(input);
 
             return Redirect("Index");
         }
 
         public async Task<IActionResult> Checkout(string id)
         {
-            var reservation = await reservationRepository.FindAsync(id);
+            var input = await _bll.CheckoutView(id);
 
-            if (reservation == null)
+            if (input == null)
                 return new NotFoundResult();
 
-            var roomUnitDescription = Mapper.Map<string>(await roomRepository.RoomUnit());
-
-            var extraServices = await serviceRepository.All(s => !(s is Room) && s.Extra, include: r => r.Include(s => s.Unit));
-
-            ViewBag.RoomUnitDescription = roomUnitDescription;
-
-            var input = Mapper.Map<ReservationInputDto>(reservation);
-            input.Services = Mapper.Map<List<ServiceInputDto>>(extraServices);
-
+            ViewBag.RoomUnitDescription = await _bll.RoomUnitDescription();
             return View(input);
         }
 
         [HttpPost]
         public async Task<IActionResult> Checkout(ReservationInputDto input)
         {
-            if (string.IsNullOrEmpty(input.ReservationId)) if (string.IsNullOrEmpty(input.ReservationId))
-                    return new NotFoundResult();
+            var res = await _bll.Checkout(input);
 
-            var reservation = await reservationRepository.FindAsync(input.ReservationId);
-
-            if (reservation == null)
+            if (!res)
                 return new NotFoundResult();
-
-            input.Services
-                .Where(s => s.Enabled).ToList()
-                .ForEach(s => reservation.BillableServices.Add(Mapper.Map<BillableService>(s)));
-                
-            reservation.CheckedOut = true;
-
-            await unitOfWork.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Bill(string id)
         {
-            if (string.IsNullOrEmpty(id))
+            var output = await _bll.Bill(id);
+
+            if(output == null)
                 return new NotFoundResult();
-
-            var reservation = (await reservationRepository.GetPagedListAsync(r => r.ReservationId == id, pageSize: 1,
-                include: i => i.Include(r => r.BillableServices).ThenInclude(s => s.Service).ThenInclude(s => s.Unit))).Items.First();
-
-            if (reservation == null)
-                return new NotFoundResult();
-
-            var services = Mapper.Map<List<BillableServiceOutputDto>>(reservation.BillableServices);
-            
-            var output = new BillOutputDto
-            {
-                Services = services,
-                CustomerName = reservation.CustomerName,
-                CheckinDate = reservation.CheckinDate,
-                Total = Mapper.Map<int>(services)
-            };
 
             ViewBag.Currency = "grams of gold";
             return View(output);

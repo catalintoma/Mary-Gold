@@ -35,7 +35,7 @@ namespace Marigold
         [Display(Name = "Checkout date")]
         public DateTime CheckoutDate { get; set; }
 
-        public List<ServiceInputDto> Services { get; set; }
+        public List<BillableServiceInputDto> Services { get; set; }
 
         public List<SelectListItem> Rooms { get; set; }
 

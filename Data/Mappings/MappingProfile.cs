@@ -9,9 +9,11 @@ namespace Marigold
     {
         public MappingProfile()
         {
-            CreateMap<Service, ServiceInputDto>()
+            CreateMap<Service, BillableServiceInputDto>()
                 .ForMember(s => s.Unitless, opt => opt.MapFrom(s => s.Unitless))
                 .ForMember(s => s.UnitDescription, opt => opt.MapFrom(s => s.Unit));
+
+            CreateMap<BillableServiceInputDto,Service>();
 
             CreateMap<Room, SelectListItem>()
                 .ForMember(s => s.Value, opt => opt.MapFrom(r => r.ServiceId))
@@ -48,9 +50,10 @@ namespace Marigold
                 .ConstructUsing(l => l.Sum(s => s.Total));
 
 
-            CreateMap<ServiceInputDto, BillableService>();
+            CreateMap<BillableServiceInputDto, BillableService>();
             CreateMap<Reservation, ReservationOutputDto>();
             CreateMap<Reservation, ReservationInputDto>();
+            CreateMap<ServiceInputDto,Service>();
 
             CreateMap<Unit, string>()
                 .ConvertUsing(u => u.Unitless ? string.Empty : $"{u.Name}s");

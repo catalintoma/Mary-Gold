@@ -87,11 +87,6 @@ namespace Marigold
                         .Priced(101)
                         .Create(),
                     new ServiceBuilder<Service>()
-                        .Named("Bike")
-                        .WithUnit(dayunit)
-                        .Priced(101)
-                        .Create(),
-                    new ServiceBuilder<Service>()
                         .Named("Minibar")
                         .ExtraCustomPrice(unitlessUnit)
                         .Create(),

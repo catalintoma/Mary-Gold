@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Marigold
 {
@@ -39,8 +41,10 @@ namespace Marigold
             // Add framework services.
             services.AddMvc();
             services.AddAutoMapper();
+            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "Marigold API", Version = "v1" }));
+            services.AddBll();
 
-            services.AddSingleton<IActionContextAccessor,ActionContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,7 +72,16 @@ namespace Marigold
                     template: "{controller=Reservations}/{action=Index}/{id?}");
             });
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json","Marigold API v1"));
+
             DbInitializer.Initialize(uow);
+        }
+
+        private string GetSwaggerXMLPath()
+        {
+            var app = PlatformServices.Default.Application;
+            return System.IO.Path.Combine(app.ApplicationBasePath, "marigold.xml");
         }
     }
 }
