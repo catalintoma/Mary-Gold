@@ -22,7 +22,7 @@ Source code for the Marigold reservation website
 ```
 dotnet restore
 ```
-* Run development build (will be running at [this endpoint](localhost:5000)
+* Run development build (will be running at [this endpoint](http://localhost:5000)
 ```
 dotnet build
 dotnet run
@@ -36,6 +36,10 @@ The API provides an extenson point for
 
 * viewing services
 * adding a new service
+
+## Diagrams
+
+You can check general flow and schema diagram in the **Diagrams** folder
 
 ## TODO's
 
