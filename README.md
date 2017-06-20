@@ -22,7 +22,7 @@ Source code for the Marigold reservation website
 ```
 dotnet restore
 ```
-* Run development build (will be running at [this endpoint](http://localhost:5000)
+* Run development build (will be running at [this endpoint](http://localhost:5000) )
 ```
 dotnet build
 dotnet run
